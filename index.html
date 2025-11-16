@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JS Testing with Selenium</title>
+</head>
+
+<body>
+    <h2>Add Two Numbers</h2>
+
+    <input type="text" id="num1" placeholder="Enter number 1"><br><br>
+    <input type="text" id="num2" placeholder="Enter number 2"><br><br>
+
+    <button id="addBtn">Add</button>
+
+    <h3>Result: <span id="output"></span></h3>
+
+    <script>
+        document.getElementById("addBtn").onclick = function () {
+            let a = parseInt(document.getElementById("num1").value);
+            let b = parseInt(document.getElementById("num2").value);
+            document.getElementById("output").innerText = a + b;
+        }
+    </script>
+</body>
+</html>
