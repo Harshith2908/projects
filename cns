@@ -1,0 +1,640 @@
+week-1
+
+#include <stdio.h>
+#include <string.h>
+
+int main()
+{
+    char *str = "Hello World";
+    char str1[12];// 11 characters + 1 for '\0'
+    int i, len;
+
+    len = strlen(str);
+
+    for(i = 0; i < len; i++)
+    {
+        str1[i] = str[i] ^ 0;
+    }
+
+    str1[i] = '\0';   // Add null character
+
+    printf("%s\n", str1);
+
+    return 0;
+}
+
+week-2
+
+  #include<stdlib.h>
+#include<string.h>
+
+int main()
+{
+    char* str="Hello World";
+    char str1[11];
+    char str2[11];
+    char str3[11];
+
+    int i,len;
+    len=strlen(str);
+    for(i=0;i<len;i++)
+    {
+        str1[i]=str[i]&127;
+        printf("%c",str1[i]);
+    }
+    printf("\n");
+
+    for(i=0;i<len;i++)
+    {
+        str2[i]=str[i]|127;
+        printf("%c",str2[i]);
+    }
+    printf("\n");
+
+    for(i=0;i<len;i++)
+    {
+        str3[i]=str[i]^127;
+        printf("%c",str3[i]);
+    }
+    printf("\n");
+}
+
+week-3
+  
+  ceaser chiper
+
+package cns;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Scanner;
+
+public class CeaserCipher {
+
+    static Scanner sc = new Scanner(System.in);
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    public static void main(String[] args) throws IOException {
+
+        System.out.print("Enter any String: ");
+        String str = br.readLine();
+
+        System.out.print("\nEnter the Key: ");
+        int key = sc.nextInt();
+
+        String encrypted = encrypt(str, key);
+        System.out.println("\nEncrypted String is: " + encrypted);
+
+        String decrypted = decrypt(encrypted, key);
+        System.out.println("\nDecrypted String is: " + decrypted);
+    }
+
+    public static String encrypt(String str, int key) {
+        String encrypted = "";
+
+        for (int i = 0; i < str.length(); i++) {
+            int c = str.charAt(i);
+
+            if (Character.isUpperCase(c)) {
+                c = c + (key % 26);
+                if (c > 'Z') {
+                    c = c - 26;
+                }
+            } 
+            else if (Character.isLowerCase(c)) {
+                c = c + (key % 26);
+                if (c > 'z') {
+                    c = c - 26;
+                }
+            }
+
+            encrypted += (char) c;
+        }
+        return encrypted;
+    }
+
+    public static String decrypt(String str, int key) {
+        String decrypted = "";
+
+        for (int i = 0; i < str.length(); i++) {
+            int c = str.charAt(i);
+
+            if (Character.isUpperCase(c)) {
+                c = c - (key % 26);
+                if (c < 'A') {
+                    c = c + 26;
+                }
+            } 
+            else if (Character.isLowerCase(c)) {
+                c = c - (key % 26);
+                if (c < 'a') {
+                    c = c + 26;
+                }
+            }
+
+            decrypted += (char) c;
+        }
+        return decrypted;
+    }
+}
+
+substituion cipher
+
+package cns;
+
+import java.io.*;
+import java.util.*;
+
+public class SubstitutionCipher {
+
+    static Scanner sc = new Scanner(System.in);
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    public static void main(String[] args) throws IOException {
+
+        String a = "abcdefghijklmnopqrstuvwxyz";
+        String b = "zyxwvutsrqponmlkjihgfedcba";
+
+        System.out.print("Enter any string: ");
+        String str = br.readLine();
+
+        String encrypt = "";
+        char c;
+
+        for (int i = 0; i < str.length(); i++) {
+            c = str.charAt(i);
+
+            int j = a.indexOf(c);   // find position
+
+            if (j != -1) {
+                encrypt = encrypt + b.charAt(j);  // substitute
+            } else {
+                encrypt = encrypt + c;  // keep spaces/symbols
+            }
+        }
+
+        System.out.println("The encrypted data is: " + encrypt);
+    }
+}
+
+hill cipher
+
+package cns;
+
+import java.io.*;
+import java.util.*;
+
+public class HillCipher {
+
+    static float[][] a = new float[3][3];   // key matrix
+    static float[][] b = new float[3][3];   // inverse matrix
+    static float[][] mes = new float[3][1]; // message matrix
+    static float[][] res = new float[3][1]; // encrypted
+    static float[][] decrypt = new float[3][1]; // decrypted
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) throws IOException {
+
+        getkeymes();
+
+        // Encryption: res = a * mes
+        for(int i=0;i<3;i++)
+            for(int j=0;j<1;j++)
+                for(int k=0;k<3;k++)
+                    res[i][j] += a[i][k] * mes[k][j];
+
+        System.out.print("\nEncrypted string is: ");
+        for(int i=0;i<3;i++) {
+            System.out.print((char)((int)(res[i][0] % 26) + 97));
+        }
+
+        inverse(); // find inverse matrix
+
+        // Decryption: decrypt = b * res
+        for(int i=0;i<3;i++)
+            for(int j=0;j<1;j++)
+                for(int k=0;k<3;k++)
+                    decrypt[i][j] += b[i][k] * res[k][j];
+
+        System.out.print("\nDecrypted string is: ");
+        for(int i=0;i<3;i++) {
+            System.out.print((char)((int)(decrypt[i][0] % 26) + 97));
+        }
+
+        System.out.println();
+    }
+
+    public static void getkeymes() throws IOException {
+
+        System.out.println("Enter 3x3 key matrix:");
+        for(int i=0;i<3;i++)
+            for(int j=0;j<3;j++)
+                a[i][j] = sc.nextFloat();
+
+        System.out.print("Enter 3-letter string: ");
+        String msg = br.readLine();
+
+        for(int i=0;i<3;i++)
+            mes[i][0] = msg.charAt(i) - 97; // convert to 0–25
+    }
+
+    public static void inverse() {
+
+        float[][] c = new float[3][3];
+
+        // Copy matrix a to c
+        for(int i=0;i<3;i++)
+            for(int j=0;j<3;j++)
+                c[i][j] = a[i][j];
+
+        // Identity matrix
+        for(int i=0;i<3;i++)
+            for(int j=0;j<3;j++)
+                b[i][j] = (i==j) ? 1 : 0;
+
+        // Gauss-Jordan method
+        for(int k=0;k<3;k++) {
+            for(int i=0;i<3;i++) {
+                if(i != k) {
+                    float factor = c[i][k] / c[k][k];
+                    for(int j=0;j<3;j++) {
+                        c[i][j] -= factor * c[k][j];
+                        b[i][j] -= factor * b[k][j];
+                    }
+                }
+            }
+        }
+
+        // Normalize
+        for(int i=0;i<3;i++)
+            for(int j=0;j<3;j++)
+                b[i][j] = b[i][j] / c[i][i];
+
+        System.out.println("\nInverse Matrix:");
+        for(int i=0;i<3;i++) {
+            for(int j=0;j<3;j++)
+                System.out.print(b[i][j] + " ");
+            System.out.println();
+        }
+    }
+}
+
+week-4
+
+
+import javax.crypto.*;
+import javax.crypto.spec.DESedeKeySpec;
+import java.util.Base64;
+import java.io.*;
+
+public class DES {
+
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    public static void main(String[] args) throws Exception {
+
+        String keyStr = "ThisIsSecretEncryptionKey";
+        byte[] keyBytes = keyStr.getBytes("UTF8");
+
+        SecretKey key = SecretKeyFactory.getInstance("DESede")
+                .generateSecret(new DESedeKeySpec(keyBytes));
+
+        Cipher cipher = Cipher.getInstance("DESede");
+
+        System.out.print("Enter the string: ");
+        String input = br.readLine();
+
+        // Encryption
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        String encrypted = Base64.getEncoder()
+                .encodeToString(cipher.doFinal(input.getBytes()));
+
+        // Decryption
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        String decrypted = new String(
+                cipher.doFinal(Base64.getDecoder().decode(encrypted)));
+
+        System.out.println("\nEncrypted: " + encrypted);
+        System.out.println("Decrypted: " + decrypted);
+    }
+}
+
+week-5
+
+package cns;
+
+import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.security.Key;
+import javax.crypto.Cipher;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.KeyGenerator;
+import java.util.Base64;
+
+public class BlowFish {
+
+    public static void main(String[] args) throws Exception {
+
+        // TODO code application logic here
+        KeyGenerator keyGenerator = KeyGenerator.getInstance("Blowfish");
+
+        keyGenerator.init(128);
+
+        Key secretKey = keyGenerator.generateKey();
+
+        Cipher cipherOut = Cipher.getInstance("Blowfish/CFB/NoPadding");
+
+        cipherOut.init(Cipher.ENCRYPT_MODE, secretKey);
+
+        // Updated Base64
+        Base64.Encoder encoder = Base64.getEncoder();
+
+        byte iv[] = cipherOut.getIV();
+
+        if (iv != null) {
+            System.out.println("Initialization Vector of the Cipher: " + encoder.encodeToString(iv));
+        }
+
+        FileInputStream fin = new FileInputStream("inputfile.txt");
+
+        FileOutputStream fout = new FileOutputStream("outputfile.txt");
+
+        CipherOutputStream cout = new CipherOutputStream(fout, cipherOut);
+
+        int input = 0;
+
+        while ((input = fin.read()) != -1) {
+            cout.write(input);
+        }
+
+        fin.close();
+        cout.close();
+    }
+}
+
+week-6
+
+package cns;
+
+import java.security.*;
+import javax.crypto.*;
+import javax.crypto.spec.*;
+import java.io.*;
+
+public class AES {
+
+    public static String asHex(byte buf[]) {
+        StringBuffer strbuf = new StringBuffer(buf.length * 2);
+        int i;
+
+        for (i = 0; i < buf.length; i++) {
+            if (((int) buf[i] & 0xff) < 0x10)
+                strbuf.append("0");
+
+            strbuf.append(Long.toString((int) buf[i] & 0xff, 16));
+        }
+        return strbuf.toString();
+    }
+
+    public static void main(String[] args) throws Exception {
+
+        String message = "AES still rocks!!";
+
+        // Key Generator
+        KeyGenerator kgen = KeyGenerator.getInstance("AES");
+        kgen.init(128);
+
+        // Generate Key
+        SecretKey skey = kgen.generateKey();
+        byte[] raw = skey.getEncoded();
+
+        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+
+        // Cipher
+        Cipher cipher = Cipher.getInstance("AES");
+
+        // Encryption
+        cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
+
+        byte[] encrypted = cipher.doFinal(
+                (args.length == 0 ? message : args[0]).getBytes());
+
+        System.out.println("Encrypted string: " + asHex(encrypted));
+
+        // Decryption
+        cipher.init(Cipher.DECRYPT_MODE, skeySpec);
+
+        byte[] original = cipher.doFinal(encrypted);
+
+        String originalString = new String(original);
+
+        System.out.println("Original string: " + originalString);
+    }
+}
+
+week-7
+
+package cns;
+
+import java.util.Scanner;
+import javax.crypto.*;
+
+public class BlowFishCipher {
+    public static void main(String[] args) throws Exception {
+
+        Scanner sc = new Scanner(System.in);
+
+        KeyGenerator kg = KeyGenerator.getInstance("Blowfish");
+        SecretKey key = kg.generateKey();
+
+        Cipher cipher = Cipher.getInstance("Blowfish");
+
+        System.out.print("Enter message: ");
+        String input = sc.nextLine();
+
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        byte[] encrypted = cipher.doFinal(input.getBytes());
+
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] decrypted = cipher.doFinal(encrypted);
+
+        System.out.println("Encrypted: " + new String(encrypted));
+        System.out.println("Decrypted: " + new String(decrypted));
+    }
+}
+
+week-8
+
+package cns;
+
+import java.math.BigInteger;
+import java.util.Random;
+import java.util.Scanner;
+
+public class RSA {
+
+    static Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) {
+
+        // Ask user to input two prime numbers
+        System.out.print("Enter a prime number p: ");
+        BigInteger p = sc.nextBigInteger();
+
+        System.out.print("Enter another prime number q: ");
+        BigInteger q = sc.nextBigInteger();
+
+        // Compute modulus n = p * q
+        BigInteger n = p.multiply(q);
+
+        // Compute φ(n) = (p-1)*(q-1)
+        BigInteger phi = (p.subtract(BigInteger.ONE)).multiply(q.subtract(BigInteger.ONE));
+
+        // Generate public exponent e
+        BigInteger e = generateE(phi);
+
+        // Compute private exponent d (multiplicative inverse of e mod phi)
+        BigInteger d = e.modInverse(phi);
+
+        // Print public and private keys
+        System.out.println("\nEncryption (public) keys: " + e + ", " + n);
+        System.out.println("Decryption (private) keys: " + d + ", " + n);
+    }
+
+    // Function to generate a valid public exponent e
+    public static BigInteger generateE(BigInteger phi) {
+        BigInteger e;
+        Random rand = new Random();
+        do {
+            e = new BigInteger(phi.bitLength(), rand);
+        } while (e.compareTo(BigInteger.TWO) < 0 || !phi.gcd(e).equals(BigInteger.ONE));
+        return e;
+    }
+}
+
+week-9
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diffie-Hellman Key Exchange</title>
+</head>
+<body>
+
+<h2>Diffie-Hellman Key Exchange</h2>
+
+<label>Enter Prime Number (p): </label>
+<input type="number" id="p"><br><br>
+
+<label>Enter Base (g): </label>
+<input type="number" id="g"><br><br>
+
+<label>Enter Alice Private Key (Xa): </label>
+<input type="number" id="xa"><br><br>
+
+<label>Enter Bob Private Key (Xb): </label>
+<input type="number" id="xb"><br><br>
+
+<button onclick="calculate()">Calculate</button>
+
+<h3 id="output"></h3>
+
+<script>
+function powerMod(base, exp, mod) {
+    let result = 1;
+    for (let i = 0; i < exp; i++) {
+        result = (result * base) % mod;
+    }
+    return result;
+}
+
+function calculate() {
+
+    let p = parseInt(document.getElementById("p").value);
+    let g = parseInt(document.getElementById("g").value);
+    let xa = parseInt(document.getElementById("xa").value);
+    let xb = parseInt(document.getElementById("xb").value);
+
+    // Public keys
+    let Ya = powerMod(g, xa, p);
+    let Yb = powerMod(g, xb, p);
+
+    // Shared keys
+    let Ka = powerMod(Yb, xa, p);
+    let Kb = powerMod(Ya, xb, p);
+
+    document.getElementById("output").innerHTML =
+        "Alice Public Key (Ya): " + Ya + "<br>" +
+        "Bob Public Key (Yb): " + Yb + "<br>" +
+        "Shared Key (Alice): " + Ka + "<br>" +
+        "Shared Key (Bob): " + Kb;
+}
+</script>
+
+</body>
+</html>
+
+week-10
+
+package cns;
+
+import java.security.*;
+
+public class SHA1 {
+    public static void main(String[] a) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA1");
+
+            System.out.println("Message digest object info: ");
+            System.out.println(" Algorithm = " + md.getAlgorithm());
+            System.out.println(" Provider = " + md.getProvider());
+            System.out.println(" ToString = " + md.toString());
+
+            String input = "";
+            md.update(input.getBytes());
+            byte[] output = md.digest();
+
+            System.out.println();
+            System.out.println("SHA1(\"" + input + "\") = " + bytesToHex(output));
+
+            input = "abc";
+            md.update(input.getBytes());
+            output = md.digest();
+
+            System.out.println();
+            System.out.println("SHA1(\"" + input + "\") = " + bytesToHex(output));
+
+            input = "abcdefghijklmnopqrstuvwxyz";
+            md.update(input.getBytes());
+            output = md.digest();
+
+            System.out.println();
+            System.out.println("SHA1(\"" + input + "\") = " + bytesToHex(output));
+            System.out.println("");
+
+        } catch (Exception e) {
+            System.out.println("Exception: " + e);
+        }
+    }
+
+    public static String bytesToHex(byte[] b) {
+        char hexDigit[] = {
+            '0', '1', '2', '3', '4', '5', '6', '7',
+            '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
+        };
+
+        StringBuffer buf = new StringBuffer();
+
+        for (int j = 0; j < b.length; j++) {
+            buf.append(hexDigit[(b[j] >> 4) & 0x0f]);
+            buf.append(hexDigit[b[j] & 0x0f]);
+        }
+
+        return buf.toString();
+    }
+}
+
