@@ -344,3 +344,64 @@ plt.ylabel("Spending Score")
 plt.title("Customer Segmentation using K-Means") 
 # Show graph 
 plt.show() 
+
+week-10
+
+#8. Performance analysis of Classification Algorithms on a specific dataset (heart Disease prediction)								
+#	Age	Sex	ChestPain	BP	Cholesterol	MaxHR	Target	
+#	45	1	3	130	230	150	1	
+#	54	0	2	140	250	140	1	
+#	60	1	1	120	240	130	0	
+#	48	0	2	135	220	160	1	
+#	52	1	3	150	260	120	0	
+#	46	0	1	128	210	170	1	
+
+# Performance Analysis of Classification Algorithms
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# Models
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
+
+# Step 1: Create dataset
+data = {
+    'Age': [45, 54, 60, 48, 52, 46],
+    'Sex': [1, 0, 1, 0, 1, 0],
+    'ChestPain': [3, 2, 1, 2, 3, 1],
+    'BP': [130, 140, 120, 135, 150, 128],
+    'Cholesterol': [230, 250, 240, 220, 260, 210],
+    'MaxHR': [150, 140, 130, 160, 120, 170],
+    'Target': [1, 1, 0, 1, 0, 1]
+}
+
+df = pd.DataFrame(data)
+print(df)
+
+# Step 2: Features & Target
+X = df.drop('Target', axis=1)
+y = df['Target']
+
+# Step 3: Split data
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=0
+)
+
+# Step 4: Models
+models = {
+    "Logistic Regression": LogisticRegression(),
+    "Decision Tree": DecisionTreeClassifier(),
+    "KNN": KNeighborsClassifier(n_neighbors=3)
+}
+
+# Step 5: Train & Evaluate
+print("Model Performance:\n")
+
+for name, model in models.items():
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+    acc = accuracy_score(y_test, y_pred)
+    print(name, "Accuracy:", acc)
